@@ -24,8 +24,7 @@
   "panels": [
     {
       "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
+        "type": "prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -104,8 +103,7 @@
       "targets": [
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
+            "type": "prometheus"
           },
           "editorMode": "code",
           "expr": "100 - (avg by (instance) (irate(node_cpu_seconds_total{mode=\"idle\"}[5m])) * 100)",
@@ -120,8 +118,7 @@
     },
     {
       "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
+        "type": "prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -200,8 +197,7 @@
       "targets": [
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
+            "type": "prometheus"
           },
           "editorMode": "code",
           "expr": "(1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) * 100",
@@ -216,8 +212,7 @@
     },
     {
       "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
+        "type": "prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -294,28 +289,14 @@
       "targets": [
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
+            "type": "prometheus"
           },
           "editorMode": "code",
-          "expr": "node_filesystem_size_bytes{fstype!=\"tmpfs\",fstype!=\"overlay\",mountpoint=\"/\"} - node_filesystem_free_bytes{fstype!=\"tmpfs\",fstype!=\"overlay\",mountpoint=\"/\"}",
+          "expr": "node_filesystem_size_bytes - node_filesystem_free_bytes",
           "instant": false,
-          "legendFormat": "Root Disk Used",
+          "legendFormat": "Used - {{mountpoint}}",
           "range": true,
           "refId": "A"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
-          "editorMode": "code",
-          "expr": "node_filesystem_size_bytes{fstype!=\"tmpfs\",fstype!=\"overlay\",mountpoint=~\".*/home.*\"} - node_filesystem_free_bytes{fstype!=\"tmpfs\",fstype!=\"overlay\",mountpoint=~\".*/home.*\"}",
-          "hide": false,
-          "instant": false,
-          "legendFormat": "Home Disk Used (Juneogo DB)",
-          "range": true,
-          "refId": "B"
         }
       ],
       "title": "Storage Usage (Bytes)",
@@ -323,8 +304,7 @@
     },
     {
       "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
+        "type": "prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -403,11 +383,10 @@
       "targets": [
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
+            "type": "prometheus"
           },
           "editorMode": "code",
-          "expr": "100 - ((node_filesystem_avail_bytes{fstype!=\"tmpfs\",fstype!=\"overlay\"} * 100) / node_filesystem_size_bytes{fstype!=\"tmpfs\",fstype!=\"overlay\"})",
+          "expr": "100 - ((node_filesystem_avail_bytes * 100) / node_filesystem_size_bytes)",
           "instant": false,
           "legendFormat": "{{mountpoint}}",
           "range": true,
@@ -419,8 +398,7 @@
     },
     {
       "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
+        "type": "prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -497,26 +475,24 @@
       "targets": [
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
+            "type": "prometheus"
           },
           "editorMode": "code",
           "expr": "rate(node_network_receive_bytes_total{device!=\"lo\"}[5m])",
           "instant": false,
-          "legendFormat": "{{device}} - Received",
+          "legendFormat": "{{device}} - RX",
           "range": true,
           "refId": "A"
         },
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
+            "type": "prometheus"
           },
           "editorMode": "code",
           "expr": "rate(node_network_transmit_bytes_total{device!=\"lo\"}[5m])",
           "hide": false,
           "instant": false,
-          "legendFormat": "{{device}} - Transmitted",
+          "legendFormat": "{{device}} - TX",
           "range": true,
           "refId": "B"
         }
@@ -526,8 +502,7 @@
     },
     {
       "datasource": {
-        "type": "loki",
-        "uid": "loki"
+        "type": "loki"
       },
       "gridPos": {
         "h": 12,
@@ -549,8 +524,7 @@
       "targets": [
         {
           "datasource": {
-            "type": "loki",
-            "uid": "loki"
+            "type": "loki"
           },
           "editorMode": "code",
           "expr": "{unit=\"juneogo.service\"}",
@@ -579,8 +553,8 @@
   },
   "timepicker": {},
   "timezone": "",
-  "title": "Juneogo Node Monitoring",
-  "uid": "juneogo-monitoring",
+  "title": "Juneogo Node Monitoring - Working",
+  "uid": "juneogo-monitoring-working",
   "version": 1,
   "weekStart": ""
 }
