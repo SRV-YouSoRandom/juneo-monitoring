@@ -1,3 +1,5 @@
+version: '3.8'
+
 services:
   # Prometheus for metrics collection
   prometheus:
@@ -54,17 +56,18 @@ services:
     networks:
       - monitoring
 
-  # Promtail for log collection with enhanced permissions
+  # Promtail for log collection with Juneogo log files
   promtail:
     image: grafana/promtail:2.9.0
     container_name: promtail
-    user: "0:0"  # Run as root to access journal
+    user: "0:0"  # Run as root to access log files
     volumes:
       - ./promtail/promtail.yml:/etc/promtail/config.yml
       - /var/log/journal:/var/log/journal:ro
       - /run/systemd/journal:/run/systemd/journal:ro
       - /etc/machine-id:/etc/machine-id:ro
-      - /var/log:/var/log:ro  # Additional log access
+      - /root:/host/root:ro  # Mount root directory to access .juneogo/logs
+      - /var/log:/var/log:ro
     command: -config.file=/etc/promtail/config.yml
     restart: unless-stopped
     networks:
