@@ -63,6 +63,8 @@
             }
           },
           "mappings": [],
+          "max": 100,
+          "min": 0,
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -105,10 +107,11 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "100 - (avg(irate(node_cpu_seconds_total{mode=\"idle\"}[5m])) * 100)",
-          "format": "time_series",
-          "intervalFactor": 1,
-          "legendFormat": "CPU Usage",
+          "editorMode": "code",
+          "expr": "100 - (avg by (instance) (irate(node_cpu_seconds_total{mode=\"idle\"}[5m])) * 100)",
+          "instant": false,
+          "legendFormat": "CPU Usage %",
+          "range": true,
           "refId": "A"
         }
       ],
@@ -156,6 +159,8 @@
             }
           },
           "mappings": [],
+          "max": 100,
+          "min": 0,
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -198,14 +203,15 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
+          "editorMode": "code",
           "expr": "(1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) * 100",
-          "format": "time_series",
-          "intervalFactor": 1,
-          "legendFormat": "RAM Usage",
+          "instant": false,
+          "legendFormat": "Memory Usage %",
+          "range": true,
           "refId": "A"
         }
       ],
-      "title": "RAM Usage",
+      "title": "Memory Usage",
       "type": "timeseries"
     },
     {
@@ -291,10 +297,11 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "node_filesystem_size_bytes{mountpoint=~\"/host/home\"} - node_filesystem_free_bytes{mountpoint=~\"/host/home\"}",
-          "format": "time_series",
-          "intervalFactor": 1,
-          "legendFormat": "Juneogo DB Storage Used",
+          "editorMode": "code",
+          "expr": "node_filesystem_size_bytes{fstype!=\"tmpfs\",fstype!=\"overlay\",mountpoint=\"/\"} - node_filesystem_free_bytes{fstype!=\"tmpfs\",fstype!=\"overlay\",mountpoint=\"/\"}",
+          "instant": false,
+          "legendFormat": "Root Disk Used",
+          "range": true,
           "refId": "A"
         },
         {
@@ -302,14 +309,112 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "node_filesystem_free_bytes{mountpoint=~\"/host/home\"}",
-          "format": "time_series",
-          "intervalFactor": 1,
-          "legendFormat": "Available Storage",
+          "editorMode": "code",
+          "expr": "node_filesystem_size_bytes{fstype!=\"tmpfs\",fstype!=\"overlay\",mountpoint=~\".*/home.*\"} - node_filesystem_free_bytes{fstype!=\"tmpfs\",fstype!=\"overlay\",mountpoint=~\".*/home.*\"}",
+          "hide": false,
+          "instant": false,
+          "legendFormat": "Home Disk Used (Juneogo DB)",
+          "range": true,
           "refId": "B"
         }
       ],
-      "title": "Storage Usage (Juneogo DB)",
+      "title": "Storage Usage (Bytes)",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "vis": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "max": 100,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 8
+      },
+      "id": 4,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "editorMode": "code",
+          "expr": "100 - ((node_filesystem_avail_bytes{fstype!=\"tmpfs\",fstype!=\"overlay\"} * 100) / node_filesystem_size_bytes{fstype!=\"tmpfs\",fstype!=\"overlay\"})",
+          "instant": false,
+          "legendFormat": "{{mountpoint}}",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Disk Usage Percentage",
       "type": "timeseries"
     },
     {
@@ -366,17 +471,17 @@
               }
             ]
           },
-          "unit": "percent"
+          "unit": "binBps"
         },
         "overrides": []
       },
       "gridPos": {
         "h": 8,
-        "w": 12,
-        "x": 12,
-        "y": 8
+        "w": 24,
+        "x": 0,
+        "y": 16
       },
-      "id": 4,
+      "id": 5,
       "options": {
         "legend": {
           "calcs": [],
@@ -395,14 +500,28 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "100 - ((node_filesystem_avail_bytes{mountpoint=~\"/host/home\"} * 100) / node_filesystem_size_bytes{mountpoint=~\"/host/home\"})",
-          "format": "time_series",
-          "intervalFactor": 1,
-          "legendFormat": "Disk Usage %",
+          "editorMode": "code",
+          "expr": "rate(node_network_receive_bytes_total{device!=\"lo\"}[5m])",
+          "instant": false,
+          "legendFormat": "{{device}} - Received",
+          "range": true,
           "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "editorMode": "code",
+          "expr": "rate(node_network_transmit_bytes_total{device!=\"lo\"}[5m])",
+          "hide": false,
+          "instant": false,
+          "legendFormat": "{{device}} - Transmitted",
+          "range": true,
+          "refId": "B"
         }
       ],
-      "title": "Disk Usage Percentage",
+      "title": "Network Traffic",
       "type": "timeseries"
     },
     {
@@ -414,16 +533,16 @@
         "h": 12,
         "w": 24,
         "x": 0,
-        "y": 16
+        "y": 24
       },
-      "id": 5,
+      "id": 6,
       "options": {
         "dedupStrategy": "none",
         "enableLogDetails": true,
         "prettifyLogMessage": false,
         "showCommonLabels": false,
         "showLabels": false,
-        "showTime": false,
+        "showTime": true,
         "sortOrder": "Descending",
         "wrapLogMessage": false
       },
@@ -433,7 +552,9 @@
             "type": "loki",
             "uid": "loki"
           },
+          "editorMode": "code",
           "expr": "{unit=\"juneogo.service\"}",
+          "queryType": "",
           "refId": "A"
         }
       ],
@@ -442,7 +563,7 @@
     }
   ],
   "refresh": "5s",
-  "schemaVersion": 37,
+  "schemaVersion": 39,
   "style": "dark",
   "tags": [
     "juneogo",
