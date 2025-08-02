@@ -2,6 +2,9 @@
 
 Complete monitoring solution for Juneogo blockchain nodes using Prometheus, Grafana, and Loki.
 
+<img width="2404" height="3040" alt="212 90 121 86_3001_d_juneogo-monitoring-working_juneogo-node-monitoring-working_orgId=1 from=now-1h to=now timezone=browser refresh=10s" src="https://github.com/user-attachments/assets/e8d1cda5-64af-4eca-9015-e7f4bb668862" />
+
+
 ## 🚀 Quick Start
 
 ```bash
