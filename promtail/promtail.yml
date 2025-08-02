@@ -9,32 +9,31 @@ clients:
   - url: http://loki:3100/loki/api/v1/push
 
 scrape_configs:
-  - job_name: juneogo-main
-    static_configs:
-      - targets:
-          - localhost
-        labels:
-          job: juneogo
-          service: juneogo
-          logfile: main
-          __path__: /host/root/.juneogo/logs/main.log
-
-  - job_name: juneogo-june
-    static_configs:
-      - targets:
-          - localhost
-        labels:
-          job: juneogo
-          service: juneogo
-          logfile: june
-          __path__: /host/root/.juneogo/logs/JUNE.log
-
-  - job_name: juneogo-jvm
-    static_configs:
-      - targets:
-          - localhost
-        labels:
-          job: juneogo
-          service: juneogo
-          logfile: jvm
-          __path__: /host/root/.juneogo/logs/JVM.log
+  - job_name: systemd-journal
+    journal:
+      max_age: 12h
+      labels:
+        job: systemd-journal
+    pipeline_stages:
+      - json:
+          expressions:
+            message: MESSAGE
+            unit: _SYSTEMD_UNIT
+            priority: PRIORITY
+            hostname: _HOSTNAME
+      - match:
+          selector: '{unit="juneogo.service"}'
+          stages:
+            - labels:
+                service: juneogo
+                unit: juneogo
+            - output:
+                source: message
+      - drop:
+          expression: '.*'
+          older_than: 24h
+    relabel_configs:
+      - source_labels: ['__journal__systemd_unit']
+        target_label: 'unit'
+      - source_labels: ['__journal__hostname']
+        target_label: 'hostname'
