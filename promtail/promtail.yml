@@ -9,7 +9,6 @@ clients:
   - url: http://loki:3100/loki/api/v1/push
 
 scrape_configs:
-  # Juneogo main log file
   - job_name: juneogo-main
     static_configs:
       - targets:
@@ -18,9 +17,8 @@ scrape_configs:
           job: juneogo
           service: juneogo
           logfile: main
-          __path__: /var/log/juneogo/main.log
+          __path__: /host/root/.juneogo/logs/main.log
 
-  # Juneogo JUNE chain log
   - job_name: juneogo-june
     static_configs:
       - targets:
@@ -29,9 +27,8 @@ scrape_configs:
           job: juneogo
           service: juneogo
           logfile: june
-          __path__: /var/log/juneogo/JUNE.log
+          __path__: /host/root/.juneogo/logs/JUNE.log
 
-  # Juneogo JVM log
   - job_name: juneogo-jvm
     static_configs:
       - targets:
@@ -40,4 +37,4 @@ scrape_configs:
           job: juneogo
           service: juneogo
           logfile: jvm
-          __path__: /var/log/juneogo/JVM.log
+          __path__: /host/root/.juneogo/logs/JVM.log
